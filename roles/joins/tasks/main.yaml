@@ -17,7 +17,7 @@
     - name: Adiciona o primeiro nó ao cluster 
       community.docker.docker_swarm:
         state: join
-        join_token: "{{ manager }}"
+        join_token: "{{ worker }}"
         advertise_addr: "{{ ansible_host }}"
         remote_addrs: ["{{ hostvars['m1'].ansible_host }}:2377"]
       when: ansible_hostname == "node-1"

@@ -19,18 +19,18 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "master" do |man|
-    man.vm.network "private_network", ip: "10.1.1.254"
-    man.vm.hostname = "master"
-    man.vm.synced_folder ".", "/vagrant", disabled: false
+  config.vm.define "master" do |mas|
+    mas.vm.network "private_network", ip: "10.1.1.254"
+    mas.vm.hostname = "master"
+    mas.vm.synced_folder ".", "/vagrant", disabled: false
 
-    man.vm.provider "virtualbox" do |v|
+    mas.vm.provider "virtualbox" do |v|
       v.memory = 1024
       v.cpus = 1
     end
 
-    man.vm.provision "shell", path: "#{script}", args: "vagrant"   
-    man.vm.provision "ansible_local" do |a|
+    mas.vm.provision "shell", path: "#{script}", args: "vagrant"   
+    mas.vm.provision "ansible_local" do |a|
       a.install = false
       a.galaxy_command = "ansible-galaxy collection install community.docker"
       a.config_file = "ansible.cfg"
