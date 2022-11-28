@@ -12,7 +12,7 @@
         - ansible.builtin.set_fact:
             worker: "{{ worker_token_result.stdout }}"
             manager: "{{ manager_token_result.stdout }}"
-      when: ansible_hostname != "manager"
+      when: ansible_hostname != "master"
 
     - name: Adiciona o primeiro nó ao cluster 
       community.docker.docker_swarm:
@@ -20,7 +20,7 @@
         join_token: "{{ manager }}"
         advertise_addr: "{{ ansible_host }}"
         remote_addrs: ["{{ hostvars['m1'].ansible_host }}:2377"]
-      when: ansible_hostname == "worker-1"
+      when: ansible_hostname == "node-1"
 
     - name: Adiciona o segundo nó ao cluster 
       community.docker.docker_swarm:
@@ -28,7 +28,7 @@
         join_token: "{{ worker }}"
         advertise_addr: "{{ ansible_host }}"
         remote_addrs: ["{{ hostvars['m1'].ansible_host }}:2377"]
-      when: ansible_hostname == "worker-2"
+      when: ansible_hostname == "node-2"
 
 
 ...

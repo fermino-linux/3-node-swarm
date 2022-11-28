@@ -8,9 +8,9 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   (0..1).each do |n|
-    config.vm.define "worker-#{n + 1}" do |w|
+    config.vm.define "node-#{n + 1}" do |w|
       w.vm.network "private_network", ip: "10.1.1.1#{n}"
-      w.vm.hostname = "worker-#{n + 1}"
+      w.vm.hostname = "node-#{n + 1}"
 
       w.vm.provider "virtualbox" do |v|
         v.memory = 512
@@ -19,9 +19,9 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "manager" do |man|
+  config.vm.define "master" do |man|
     man.vm.network "private_network", ip: "10.1.1.254"
-    man.vm.hostname = "manager"
+    man.vm.hostname = "master"
     man.vm.synced_folder ".", "/vagrant", disabled: false
 
     man.vm.provider "virtualbox" do |v|
