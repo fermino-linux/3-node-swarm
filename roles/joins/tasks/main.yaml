@@ -1,0 +1,34 @@
+---
+- name: Adiciona os nós ao cluster
+  block:
+    - name: Prepara os tokens
+      block:
+        - ansible.builtin.command: cat /tmp/manager_token
+          register: "manager_token_result"
+
+        - ansible.builtin.command: cat /tmp/worker_token
+          register: "worker_token_result"
+
+        - ansible.builtin.set_fact:
+            worker: "{{ worker_token_result.stdout }}"
+            manager: "{{ manager_token_result.stdout }}"
+      when: ansible_hostname != "manager"
+
+    - name: Adiciona o primeiro nó ao cluster 
+      community.docker.docker_swarm:
+        state: join
+        join_token: "{{ manager }}"
+        advertise_addr: "{{ ansible_host }}"
+        remote_addrs: ["{{ hostvars['m1'].ansible_host }}:2377"]
+      when: ansible_hostname == "worker-1"
+
+    - name: Adiciona o segundo nó ao cluster 
+      community.docker.docker_swarm:
+        state: join
+        join_token: "{{ worker }}"
+        advertise_addr: "{{ ansible_host }}"
+        remote_addrs: ["{{ hostvars['m1'].ansible_host }}:2377"]
+      when: ansible_hostname == "worker-2"
+
+
+...
