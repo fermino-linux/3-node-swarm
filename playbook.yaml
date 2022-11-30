@@ -1,0 +1,14 @@
+---
+- name: Prepara as dependencias
+  tags: docker
+  hosts: nodes
+  roles:
+    - common
+
+- name: Inicia o cluster e prepara os tokens
+  tags: swarm
+  hosts: nodes
+  roles:
+    - tokens
+    - joins
+...

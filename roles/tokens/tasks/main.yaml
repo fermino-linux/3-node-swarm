@@ -1,0 +1,31 @@
+---
+  - name: Prepara o cluster swarm
+    block:
+      - name: Gerencia os tokens
+        block:
+          - name: Inicializa o manager no cluster e cria os tokens
+            community.docker.docker_swarm:
+              advertise_addr: "{{ ansible_host }}"
+              state: present
+            register: swarm_result    
+            when: ansible_hostname == "master"
+        
+          - name: Registra o token num arquivo
+            ansible.builtin.template: 
+              src: "{{ item }}.j2"
+              dest: "/tmp/{{ item }}_token"
+              force: yes
+            loop:
+              - manager
+              - worker
+            when: ansible_hostname == "master"
+
+          - name: Copia o token para os workers
+            copy:
+              src: "/tmp/{{ item }}_token"
+              dest: /tmp
+            loop:
+              - manager
+              - worker
+            when: ansible_hostname != "master"
+...

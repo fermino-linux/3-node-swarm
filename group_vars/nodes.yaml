@@ -1,0 +1,3 @@
+# Ansible vars
+ansible_user: vagrant
+ansible_password: vagrant

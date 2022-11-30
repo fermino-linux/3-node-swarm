@@ -1,0 +1,38 @@
+---
+- name: Preparando a instalação do Docker
+  block:
+    - name: Adicionando o repositório do Docker
+      ansible.builtin.yum_repository:
+        name: docker-ce-stable
+        description: Docker CE
+        enabled: true
+        baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+        gpgcheck: true
+        gpgkey: https://download.docker.com/linux/centos/gpg
+
+    - name: Instalando o docker
+      ansible.builtin.yum:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
+          - containerd.io
+        state: present
+    
+    - name: Instalando o docker-sdk 
+      ansible.builtin.pip:
+        name: docker
+        state: present
+
+    - name: Prepara o usuário vagrant para comandar o Docker
+      ansible.builtin.user: 
+        name: vagrant
+        append: true
+        groups: docker
+    
+    - name: Inicializa o serviço do Docker
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: true
+...
